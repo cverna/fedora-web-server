@@ -1,0 +1,20 @@
+# Caddy configuration with automatic Let's Encrypt certificates
+# Replace 'your-domain.com' with your actual domain name
+
+# For automatic HTTPS with Let's Encrypt, use your domain name instead of :80
+# your-domain.com {
+#    root * /var/www
+#    file_server
+#    log {
+#        output file /var/log/caddy/access.log
+#    }
+# }
+
+# For local development (HTTP only)
+:80 {
+     root * /var/www
+     file_server
+     log {
+         output file /var/log/caddy/access.log
+     }
+}

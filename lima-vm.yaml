@@ -1,0 +1,38 @@
+# lima-vm.yaml
+# Specify the architecture of the VM.
+# Can be "x86_64" or "aarch64".
+# It's best to match the architecture of your host machine.
+arch: "aarch64"
+
+# The 'images' section is where you define the base disk for your VM.
+images:
+  - location: "./output/disk.qcow2"
+cpus: 2
+memory: "4GiB"
+disk: "20GiB"
+
+portForwards:
+  # HTTP port
+  - guestPort: 80
+    hostPort: 8080
+  # HTTPS port
+  - guestPort: 443
+    hostPort: 844
+
+# use "qemu" on linux for better performance
+vmType: "vz"
+
+# /usr/local/bin is read-only, so let's point it to /var/usrlocal/bin instead. 
+provision:
+- mode: boot
+  script: |
+    #!/bin/bash
+    set -eux -o pipefail
+    mkdir -p /var/usrlocal/bin
+env:
+  LIMA_CIDATA_GUEST_INSTALL_PREFIX: /var/usrlocal
+
+# Turn off containerd.
+containerd:
+  system: false
+  user: false

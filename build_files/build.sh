@@ -3,22 +3,27 @@
 set -ouex pipefail
 
 ### Install packages
+dnf5 install -y --setopt=install_weak_deps=0 cloud-init 
 
-# Packages can be installed from any enabled yum repo on the image.
-# RPMfusion repos are available by default in ublue main images
-# List of rpmfusion packages can be found here:
-# https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/39/x86_64/repoview/index.html&protocol=https&redirect=1
+# Create /etc/caddy directory and copy Caddyfile
+mkdir -p /etc/caddy
+cp /ctx/Caddyfile /etc/caddy/Caddyfile
 
-# this installs a package from fedora repos
-dnf5 install -y tmux 
+# Copy web content to /usr/share for the base image
+mkdir -p /usr/share/caddy/web
+cp -r /ctx/web/* /usr/share/caddy/web/
 
-# Use a COPR Example:
-#
-# dnf5 -y copr enable ublue-os/staging
-# dnf5 -y install package
-# Disable COPRs so they don't end up enabled on the final image:
-# dnf5 -y copr disable ublue-os/staging
+# Create tmpfiles.d configuration to set up /var directories at runtime
+cat > /usr/lib/tmpfiles.d/caddy.conf << 'EOF'
+# Create Caddy directories at runtime
+d /var/log/caddy 0755 root root -
+d /var/caddy-data 0755 root root -
+d /var/caddy-config 0755 root root -
 
-#### Example for enabling a System Unit File
-
-systemctl enable podman.socket
+# Copy web content from /usr/share to /var at runtime
+d /var/www 0755 root root -
+C /var/www/index.html 0644 root root - /usr/share/caddy/web/index.html
+C /var/www/fedora-logo.png 0644 root root - /usr/share/caddy/web/fedora-logo.png
+C /var/www/caddy-logo.svg 0644 root root - /usr/share/caddy/web/caddy-logo.svg
+C /var/www/README.md 0644 root root - /usr/share/caddy/web/README.md
+EOF

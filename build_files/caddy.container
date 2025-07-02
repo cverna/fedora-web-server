@@ -1,0 +1,21 @@
+[Unit]
+Description=Caddy Web Server
+After=network-online.target
+
+[Container]
+Image=docker.io/caddy:2-alpine
+PublishPort=80:80
+PublishPort=443:443
+Memory=512m
+Volume=/var/caddy-data/:/data:Z
+Volume=/var/caddy-config/:/config:Z
+Volume=/var/log/caddy/:/var/log/caddy:Z
+Volume=/etc/caddy:/etc/caddy:Z
+Volume=/var/www/:/var/www:Z
+
+[Service]
+Restart=always
+
+[Install]
+# Start by default on boot
+WantedBy=multi-user.target
