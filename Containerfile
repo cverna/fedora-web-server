@@ -5,8 +5,6 @@ COPY build_files /
 # Base Image
 FROM quay.io/fedora/fedora-bootc:42
 
-COPY build_files/caddy.container /etc/containers/systemd/caddy.container
-
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/log \

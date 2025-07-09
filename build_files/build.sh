@@ -5,6 +5,9 @@ set -ouex pipefail
 ### Install packages
 dnf5 install -y --setopt=install_weak_deps=0 cloud-init 
 
+# Copy caddy.container to /etc/containers/systemd/caddy.container
+cp /ctx/caddy.container /etc/containers/systemd/caddy.container
+
 # Create /etc/caddy directory and copy Caddyfile
 mkdir -p /etc/caddy
 cp /ctx/Caddyfile /etc/caddy/Caddyfile
